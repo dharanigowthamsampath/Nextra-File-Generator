@@ -56,53 +56,79 @@ async function handleCreateFolders() {
   }
 }
 
-async function processStructure(parentFolder, structure, currentPath = "") {
-  for (const [name, content] of Object.entries(structure)) {
-    const folderPath = currentPath ? `${currentPath}/${name}` : name;
-    const currentFolder = parentFolder.folder(name);
-
-    if (Array.isArray(content)) {
-      // If content is an array, create files and meta.js
-      const metaContent = createMetaContent(content);
-      currentFolder.file("_meta.js", metaContent);
-
-      // Create MDX files (skip separator entries)
-      content.forEach((file) => {
-        if (!file.startsWith("--")) {
-          currentFolder.file(`${file}.mdx`, createMDXContent(file));
-        }
-      });
-    } else if (typeof content === "object") {
-      // If content is an object, recursively process it
-      await processStructure(currentFolder, content, folderPath);
-    }
-  }
-}
-
-function createMetaContent(files) {
+async function processStructure(parentFolder, structure) {
   const meta = {};
 
-  files.forEach((file) => {
-    if (file.startsWith("--")) {
-      // Handle separator
-      const title = file.substring(2).trim();
-      meta[file] = {
-        title: formatTitle(title),
-        type: "separator",
-      };
-    } else {
-      // Handle regular file
-      meta[file] = formatTitle(file);
+  for (const [key, content] of Object.entries(structure)) {
+    if (Array.isArray(content)) {
+      // This is a section with files
+      const sectionTitle = key.startsWith("--") ? key.substring(2).trim() : key;
+
+      // Add section to meta
+      if (key.startsWith("--")) {
+        meta[sectionTitle] = {
+          title: formatTitle(sectionTitle),
+          type: "separator",
+        };
+      }
+
+      // Create MDX files for each item in the array
+      content.forEach((fileName) => {
+        const slug = slugify(fileName);
+        meta[slug] = fileName;
+        parentFolder.file(`${slug}.mdx`, createMDXContent(fileName));
+      });
+    } else if (typeof content === "object") {
+      // This is a folder
+      const newFolder = parentFolder.folder(key);
+
+      // Process the subfolder
+      await processStructure(newFolder, content);
+
+      // Create _meta.js for the folder if it has direct file children
+      const hasDirectFiles = Object.values(content).some((val) =>
+        Array.isArray(val)
+      );
+      if (hasDirectFiles) {
+        newFolder.file("_meta.js", createMetaJsContent(content));
+      }
     }
-  });
+  }
+
+  return meta;
+}
+
+function createMetaJsContent(structure) {
+  const meta = {};
+
+  // Process each key in the structure
+  for (const [key, content] of Object.entries(structure)) {
+    if (Array.isArray(content)) {
+      // This is a section with files
+      const sectionTitle = key.startsWith("--") ? key.substring(2).trim() : key;
+
+      if (key.startsWith("--")) {
+        // Add separator to meta
+        meta[sectionTitle] = {
+          title: formatTitle(sectionTitle),
+          type: "separator",
+        };
+      }
+
+      // Add files to meta
+      content.forEach((fileName) => {
+        const slug = slugify(fileName);
+        meta[slug] = fileName;
+      });
+    }
+  }
 
   return `const meta = ${JSON.stringify(meta, null, 2)};
 
 export default meta;`;
 }
 
-function createMDXContent(filename) {
-  const title = formatTitle(filename);
+function createMDXContent(title) {
   return `# ${title}
 
 Welcome to the ${title} section.
@@ -114,14 +140,17 @@ Add your content here...
 }
 
 function formatTitle(str) {
-  // Remove any leading dashes and trim
-  str = str.replace(/^-+/, "").trim();
-
-  // Convert kebab-case or snake_case to Title Case
   return str
-    .split(/[-_.]/)
+    .split(/[-_]/)
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
+}
+
+function slugify(str) {
+  return str
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
 }
 
 // Show initial instructions
@@ -132,10 +161,12 @@ outputDisplay.textContent = `Instructions:
 
 Example JSON structure:
 {
-  "folder1": {
-    "folder1.1": ["--Separator Title", "page1", "page2"],
-    "folder1.2": {
-      "folder1.2.1": ["--Separator Title", "page3", "page4"]
+  "C++ Programming": {
+    "Basics of C++": {
+      "Introduction": {
+        "--Overview": ["What is C++?", "Key Features of C++"],
+        "--Setting Up": ["Installing IDE", "Writing First Program"]
+      }
     }
   }
 }`;

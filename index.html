@@ -58,10 +58,12 @@
             id="jsonInput"
             rows="20"
             placeholder='{
-  "folder1": {
-    "folder1.1": ["--Separator Title", "page1", "page2"],
-    "folder1.2": {
-      "folder1.2.1": ["--Separator Title", "page3", "page4"]
+  "C++ Programming": {
+    "Basics of C++": {
+      "Introduction": {
+        "--Overview": ["What is C++?", "Key Features of C++"],
+        "--Setting Up": ["Installing IDE", "Writing First Program"]
+      }
     }
   }
 }'
@@ -84,40 +86,47 @@
             <li>Extract the ZIP into your Nextra project's pages directory</li>
           </ol>
 
-          <h3>JSON Format Options</h3>
-          <h4>1. Nested Structure (Recommended)</h4>
+          <h3>JSON Structure Format</h3>
+          <p>The structure follows these rules:</p>
+          <ul>
+            <li>Each object key represents a folder</li>
+            <li>Keys starting with "--" become section titles</li>
+            <li>Arrays contain the MDX file names</li>
+          </ul>
+
+          <h3>Example Structure</h3>
           <pre><code>{
-  "folder1": {
-    "folder1.1": ["--Separator Title", "page1", "page2"],
-    "folder1.2": {
-      "folder1.2.1": ["--Separator Title", "page3", "page4"]
+  "Course Name": {
+    "Chapter 1": {
+      "--Introduction": [
+        "What is the Course?",
+        "Prerequisites"
+      ],
+      "--Getting Started": [
+        "Installation Guide",
+        "First Steps"
+      ]
     }
   }
 }</code></pre>
 
-          <h4>2. Path-Based Structure</h4>
-          <pre><code>{
-  "docs": ["--Getting Started", "index"],
-  "docs/tutorials": ["--Basics", "setup"],
-  "docs/tutorials/advanced": ["--Advanced", "config"]
-}</code></pre>
-
-          <h3>Special Features</h3>
+          <h3>Generated Files</h3>
+          <p>For each folder with files, you'll get:</p>
           <ul>
-            <li>Use "--" prefix for section separators</li>
-            <li>Supports both nested and path-based structures</li>
-            <li>Creates _meta.js for each folder</li>
-            <li>Generates MDX files automatically</li>
+            <li>A folder with the specified name</li>
+            <li>A _meta.js file for navigation</li>
+            <li>MDX files for each item in the arrays</li>
           </ul>
 
-          <h3>Output Structure</h3>
-          <p>The generator will create:</p>
-          <ul>
-            <li>A folder structure matching your JSON</li>
-            <li>A _meta.js file in each folder</li>
-            <li>MDX files for each page</li>
-            <li>Proper navigation with separators</li>
-          </ul>
+          <h3>_meta.js Example</h3>
+          <pre><code>const meta = {
+  "Introduction": {
+    title: "Introduction",
+    type: "separator"
+  },
+  "what-is-the-course": "What is the Course?",
+  "prerequisites": "Prerequisites"
+};</code></pre>
         </div>
       </div>
     </div>

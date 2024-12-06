@@ -1,95 +1,103 @@
 # Nextra Documentation Generator
 
-A simple web tool to generate folder structures and MDX files for Nextra-based documentation sites.
+A tool to generate structured documentation for Nextra-based sites, with support for deep hierarchies and organized navigation.
 
 ## Live Demo
 
 🚀 [Try it here](https://dharanigowthamsampath.github.io/Nextra-File-Generator)
 
+## Why This Tool?
+
+I created this tool while building [developerdocs.in](https://developerdocs.in) - a comprehensive documentation site for multiple programming languages. Creating the folder structure and \_meta.js files manually became tedious, especially for extensive documentation. This tool automates that process.
+
 ## Features
 
-- Generate folder structures for Nextra documentation
-- Create MDX files automatically
-- Generate \_meta.js files for navigation
-- Support for section separators
-- Support for unlimited folder depth
-- Support for both nested and path-based JSON structures
-- Downloadable ZIP file with complete structure
-- Live preview of the generated structure
+- Generate complete Nextra documentation structure
+- Support for deep nested hierarchies
+- Automatic \_meta.js generation
+- Section titles as folder keys
+- MDX file generation with proper naming
+- Downloadable ZIP with complete structure
 
-## Usage
-
-1. Visit the [live demo](https://dharanigowthamsampath.github.io/Nextra-File-Generator)
-2. Enter your documentation structure in JSON format
-3. Click "Create & Download Zip" button
-4. Extract the downloaded ZIP file into your Nextra project's pages directory
-
-## JSON Structure Examples
-
-### Nested Structure (Recommended)
+## JSON Structure Example
 
 ```json
 {
-  "folder1": {
-    "folder1.1": ["--Separator Title", "page1", "page2"],
-    "folder1.2": {
-      "folder1.2.1": ["--Separator Title", "page3", "page4"]
-    }
-  },
-  "folder2": {
-    "introduction": ["--Getting Started", "overview", "setup"],
-    "advanced": {
-      "topics": ["--Advanced", "config", "deployment"]
+  "C++ Programming": {
+    "Basics of C++": {
+      "Introduction": {
+        "--Overview": [
+          "What is C++?",
+          "Key Features of C++",
+          "Applications of C++"
+        ],
+        "--Setting Up": [
+          "Installing IDE (Code::Blocks, Visual Studio)",
+          "Writing the First Program"
+        ]
+      },
+      "Basic Syntax": {
+        "--Hello World": [
+          "Writing Your First Program",
+          "Compiling and Running"
+        ],
+        "--Program Structure": ["Main Function", "Headers and Preprocessors"]
+      }
     }
   }
 }
 ```
 
-### Path-Based Structure (Alternative)
-
-```json
-{
-  "docs": ["--Getting Started", "index", "introduction"],
-  "docs/tutorials": ["--Basics", "setup", "configuration"],
-  "docs/tutorials/advanced": ["--Advanced", "deployment", "optimization"]
-}
-```
-
-## Special Features
-
-- Use "--" prefix for section separators in your navigation
-- Support for both nested JSON objects and path-based structures
-- Automatic \_meta.js generation for each folder level
-- Clean MDX files created for each page
-- Modern, responsive web interface
-
-## Folder Structure Output Example
-
-For the nested structure above, it will create:
+This will generate:
 
 ```
 📁 pages
-├── 📁 folder1
-│   ├── 📁 folder1.1
-│   │   ├── 📄 _meta.js
-│   │   ├── 📄 page1.mdx
-│   │   └── 📄 page2.mdx
-│   └── 📁 folder1.2
-│       └── 📁 folder1.2.1
-│           ├── 📄 _meta.js
-│           ├── 📄 page3.mdx
-│           └── 📄 page4.mdx
-└── 📁 folder2
-    ├── 📁 introduction
-    │   ├── 📄 _meta.js
-    │   ├── 📄 overview.mdx
-    │   └── 📄 setup.mdx
-    └── 📁 advanced
-        └── 📁 topics
+└── 📁 C++ Programming
+    └── 📁 Basics of C++
+        ├── 📁 Introduction
+        │   ├── 📄 _meta.js
+        │   ├── 📄 what-is-cpp.mdx
+        │   ├── 📄 key-features-of-cpp.mdx
+        │   └── 📄 applications-of-cpp.mdx
+        └── 📁 Basic Syntax
             ├── 📄 _meta.js
-            ├── 📄 config.mdx
-            └── 📄 deployment.mdx
+            ├── 📄 writing-your-first-program.mdx
+            ├── 📄 compiling-and-running.mdx
+            └── 📄 main-function.mdx
 ```
+
+## Key Features
+
+1. **Section Titles in Keys**
+
+   - Use "--" prefix in keys to mark section titles
+   - Example: `"--Overview": ["What is C++?", ...]`
+
+2. **Automatic \_meta.js Generation**
+
+   ```javascript
+   // Example _meta.js
+   const meta = {
+     Overview: {
+       title: "Overview",
+       type: "separator",
+     },
+     "what-is-cpp": "What is C++?",
+     "key-features-of-cpp": "Key Features of C++",
+   };
+   ```
+
+3. **MDX File Generation**
+   - Files are created based on the array items
+   - Names are automatically slugified
+   - Content includes the original title
+
+## Usage
+
+1. Visit the [live demo](https://dharanigowthamsampath.github.io/Nextra-File-Generator)
+2. Enter your documentation structure following the JSON format above
+3. Click "Create & Download Zip"
+4. Extract the ZIP into your Nextra project's pages directory
 
 ## Local Development
 
@@ -104,8 +112,16 @@ git clone https://github.com/dharanigowthamsampath/Nextra-File-Generator.git
 
 ## Contributing
 
-Contributions are welcome! Feel free to open issues and pull requests.
+This tool is actively being developed. Contributions are welcome!
+
+- 🐛 Found a bug? Open an issue
+- 💡 Have an idea? Share it in discussions
+- 🔧 Want to contribute? Submit a PR
 
 ## License
 
 MIT License
+
+---
+
+Created for the Nextra community by [Dharani Gowtham](https://github.com/dharanigowthamsampath)
