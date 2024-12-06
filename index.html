@@ -58,12 +58,22 @@
             id="jsonInput"
             rows="20"
             placeholder='{
-  "C++ Programming": {
-    "Basics of C++": {
-      "Introduction": {
-        "--Overview": ["What is C++?", "Key Features of C++"],
-        "--Setting Up": ["Installing IDE", "Writing First Program"]
-      }
+  "Java Documentation": {
+    "Java Basics": {
+      "--Variables and Data Types": [
+        "Variables Overview",
+        "Primitive Data Types": [
+          "byte",
+          "short",
+          "int",
+          "long"
+        ],
+        "Non-Primitive Data Types": [
+          "Strings",
+          "Arrays",
+          "Classes"
+        ]
+      ]
     }
   }
 }'
@@ -87,45 +97,63 @@
           </ol>
 
           <h3>JSON Structure Format</h3>
-          <p>The structure follows these rules:</p>
+          <p>The structure supports nested content:</p>
           <ul>
-            <li>Each object key represents a folder</li>
-            <li>Keys starting with "--" become section titles</li>
-            <li>Arrays contain the MDX file names</li>
+            <li>Object keys become folders</li>
+            <li>Keys with "--" prefix become section titles</li>
+            <li>Arrays can contain:</li>
+            <ul>
+              <li>Simple strings (become MDX files)</li>
+              <li>Objects (become subfolders with their own files)</li>
+            </ul>
           </ul>
 
           <h3>Example Structure</h3>
           <pre><code>{
-  "Course Name": {
-    "Chapter 1": {
-      "--Introduction": [
-        "What is the Course?",
-        "Prerequisites"
-      ],
-      "--Getting Started": [
-        "Installation Guide",
-        "First Steps"
+  "Course": {
+    "Chapter": {
+      "--Section": [
+        "Basic Topic",
+        "Advanced Topic",
+        "Subtopics": [
+          "Subtopic 1",
+          "Subtopic 2"
+        ],
+        "Examples": [
+          "Example 1",
+          "Example 2"
+        ]
       ]
     }
   }
 }</code></pre>
 
-          <h3>Generated Files</h3>
-          <p>For each folder with files, you'll get:</p>
-          <ul>
-            <li>A folder with the specified name</li>
-            <li>A _meta.js file for navigation</li>
-            <li>MDX files for each item in the arrays</li>
-          </ul>
+          <h3>Generated Structure</h3>
+          <pre><code>📁 pages
+└── 📁 Course
+    └── 📁 Chapter
+        ├── 📄 _meta.js
+        ├── 📄 basic-topic.mdx
+        ├── 📄 advanced-topic.mdx
+        ├── 📁 subtopics
+        │   ├── 📄 _meta.js
+        │   ├── 📄 subtopic-1.mdx
+        │   └── 📄 subtopic-2.mdx
+        └── 📁 examples
+            ├── 📄 _meta.js
+            ├── 📄 example-1.mdx
+            └── 📄 example-2.mdx</code></pre>
 
           <h3>_meta.js Example</h3>
           <pre><code>const meta = {
-  "Introduction": {
-    title: "Introduction",
+  "Section": {
+    title: "Section",
     type: "separator"
   },
-  "what-is-the-course": "What is the Course?",
-  "prerequisites": "Prerequisites"
+  "basic-topic": "Basic Topic",
+  "advanced-topic": "Advanced Topic",
+  "subtopics": "Subtopics",
+  "examples": "Examples"
 };</code></pre>
         </div>
       </div>
