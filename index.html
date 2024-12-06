@@ -58,21 +58,17 @@
             id="jsonInput"
             rows="20"
             placeholder='{
-  "Java Documentation": {
-    "Java Basics": {
-      "--Variables and Data Types": [
-        "Variables Overview",
-        "Primitive Data Types": [
-          "byte",
-          "short",
-          "int",
-          "long"
-        ],
-        "Non-Primitive Data Types": [
-          "Strings",
-          "Arrays",
-          "Classes"
-        ]
+  "Language Name": {
+    "section_name": {
+      "--section_title": [
+        "topic1",
+        {
+          "subtopic_name": [
+            "item1",
+            "item2",
+            "item3"
+          ]
+        }
       ]
     }
   }
@@ -91,10 +87,49 @@
         <div class="docs-content">
           <h3>Quick Start</h3>
           <ol>
-            <li>Enter your documentation structure in JSON format</li>
+            <li>Generate content structure using ChatGPT (see below)</li>
+            <li>Enter the generated JSON structure</li>
             <li>Click "Create & Download Zip" button</li>
             <li>Extract the ZIP into your Nextra project's pages directory</li>
           </ol>
+
+          <h3>Generating Content with ChatGPT</h3>
+          <p>Use this prompt to generate a well-structured syllabus:</p>
+          <pre><code>I need a comprehensive programming syllabus in JSON format. The structure should follow this exact format:
+
+{
+  "Language Name": {
+    "section_name": {
+      "--section_title": [
+        "topic1",
+        {
+          "subtopic_name": [
+            "item1",
+            "item2",
+            "item3"
+          ]
+        }
+      ]
+    }
+  }
+}
+
+Important rules to follow:
+1. Use "--" prefix for section titles that act as separators
+2. Each topic can have subtopics as nested objects with arrays
+3. Keep topic names clear and descriptive
+4. Follow a logical learning progression
+5. Include all major concepts from basics to advanced
+
+The syllabus should cover:
+- Basic concepts and syntax
+- Object-Oriented Programming
+- Data Structures (if applicable)
+- Standard Libraries
+- Memory Management
+- Advanced Features
+- Best Practices
+- Common Applications</code></pre>
 
           <h3>JSON Structure Format</h3>
           <p>The structure supports nested content:</p>
@@ -110,51 +145,29 @@
 
           <h3>Example Structure</h3>
           <pre><code>{
-  "Course": {
-    "Chapter": {
-      "--Section": [
-        "Basic Topic",
-        "Advanced Topic",
-        "Subtopics": [
-          "Subtopic 1",
-          "Subtopic 2"
-        ],
-        "Examples": [
-          "Example 1",
-          "Example 2"
-        ]
+  "Java Documentation": {
+    "Java Basics": {
+      "--Variables and Data Types": [
+        "Variables Overview",
+        {
+          "Primitive Data Types": [
+            "byte",
+            "short",
+            "int",
+            "long"
+          ]
+        },
+        {
+          "Non-Primitive Data Types": [
+            "Strings",
+            "Arrays",
+            "Classes"
+          ]
+        }
       ]
     }
   }
 }</code></pre>
-
-          <h3>Generated Structure</h3>
-          <pre><code>📁 pages
-└── 📁 Course
-    └── 📁 Chapter
-        ├── 📄 _meta.js
-        ├── 📄 basic-topic.mdx
-        ├── 📄 advanced-topic.mdx
-        ├── 📁 subtopics
-        │   ├── 📄 _meta.js
-        │   ├── 📄 subtopic-1.mdx
-        │   └── 📄 subtopic-2.mdx
-        └── 📁 examples
-            ├── 📄 _meta.js
-            ├── 📄 example-1.mdx
-            └── 📄 example-2.mdx</code></pre>
-
-          <h3>_meta.js Example</h3>
-          <pre><code>const meta = {
-  "Section": {
-    title: "Section",
-    type: "separator"
-  },
-  "basic-topic": "Basic Topic",
-  "advanced-topic": "Advanced Topic",
-  "subtopics": "Subtopics",
-  "examples": "Examples"
-};</code></pre>
         </div>
       </div>
     </div>

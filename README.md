@@ -6,10 +6,6 @@ A tool to generate structured documentation for Nextra-based sites, with support
 
 🚀 [Try it here](https://dharanigowthamsampath.github.io/Nextra-File-Generator)
 
-## Why This Tool?
-
-I created this tool while building [developerdocs.in](https://developerdocs.in) - a comprehensive documentation site for multiple programming languages. Creating the folder structure and \_meta.js files manually became tedious, especially for extensive documentation. This tool automates that process.
-
 ## Features
 
 - Generate complete Nextra documentation structure
@@ -23,81 +19,73 @@ I created this tool while building [developerdocs.in](https://developerdocs.in) 
 
 ```json
 {
-  "C++ Programming": {
-    "Basics of C++": {
-      "Introduction": {
-        "--Overview": [
-          "What is C++?",
-          "Key Features of C++",
-          "Applications of C++"
-        ],
-        "--Setting Up": [
-          "Installing IDE (Code::Blocks, Visual Studio)",
-          "Writing the First Program"
-        ]
-      },
-      "Basic Syntax": {
-        "--Hello World": [
-          "Writing Your First Program",
-          "Compiling and Running"
-        ],
-        "--Program Structure": ["Main Function", "Headers and Preprocessors"]
-      }
+  "Java Documentation": {
+    "Java Basics": {
+      "--Variables and Data Types": [
+        "Variables Overview",
+        {
+          "Primitive Data Types": ["byte", "short", "int", "long"]
+        },
+        {
+          "Non-Primitive Data Types": ["Strings", "Arrays", "Classes"]
+        }
+      ]
     }
   }
 }
 ```
 
-This will generate:
+## Generating Content with ChatGPT
 
+You can use ChatGPT to generate a comprehensive syllabus in the correct JSON format. Here's the prompt to use:
+
+```text
+I need a comprehensive programming syllabus in JSON format. The structure should follow this exact format:
+
+{
+  "Language Name": {
+    "section_name": {
+      "--section_title": [
+        "topic1",
+        {
+          "subtopic_name": [
+            "item1",
+            "item2",
+            "item3"
+          ]
+        }
+      ]
+    }
+  }
+}
+
+Important rules to follow:
+1. Use "--" prefix for section titles that act as separators
+2. Each topic can have subtopics as nested objects with arrays
+3. Keep topic names clear and descriptive
+4. Follow a logical learning progression
+5. Include all major concepts from basics to advanced
+
+The syllabus should cover:
+- Basic concepts and syntax
+- Object-Oriented Programming
+- Data Structures (if applicable)
+- Standard Libraries
+- Memory Management
+- Advanced Features
+- Best Practices
+- Common Applications
+
+Please generate a complete, well-structured JSON following this format exactly. The structure will be used to generate documentation files automatically.
 ```
-📁 pages
-└── 📁 C++ Programming
-    └── 📁 Basics of C++
-        ├── 📁 Introduction
-        │   ├── 📄 _meta.js
-        │   ├── 📄 what-is-cpp.mdx
-        │   ├── 📄 key-features-of-cpp.mdx
-        │   └── 📄 applications-of-cpp.mdx
-        └── 📁 Basic Syntax
-            ├── 📄 _meta.js
-            ├── 📄 writing-your-first-program.mdx
-            ├── 📄 compiling-and-running.mdx
-            └── 📄 main-function.mdx
-```
-
-## Key Features
-
-1. **Section Titles in Keys**
-
-   - Use "--" prefix in keys to mark section titles
-   - Example: `"--Overview": ["What is C++?", ...]`
-
-2. **Automatic \_meta.js Generation**
-
-   ```javascript
-   // Example _meta.js
-   const meta = {
-     Overview: {
-       title: "Overview",
-       type: "separator",
-     },
-     "what-is-cpp": "What is C++?",
-     "key-features-of-cpp": "Key Features of C++",
-   };
-   ```
-
-3. **MDX File Generation**
-   - Files are created based on the array items
-   - Names are automatically slugified
-   - Content includes the original title
 
 ## Usage
 
 1. Visit the [live demo](https://dharanigowthamsampath.github.io/Nextra-File-Generator)
-2. Enter your documentation structure following the JSON format above
-3. Click "Create & Download Zip"
-4. Extract the ZIP into your Nextra project's pages directory
+2. Generate content structure using ChatGPT with the above prompt
+3. Enter the generated JSON structure
+4. Click "Create & Download Zip" button
+5. Extract the ZIP into your Nextra project's pages directory
 
 ## Local Development
 
