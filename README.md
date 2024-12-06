@@ -12,6 +12,8 @@ A simple web tool to generate folder structures and MDX files for Nextra-based d
 - Create MDX files automatically
 - Generate \_meta.js files for navigation
 - Support for section separators
+- Support for unlimited folder depth
+- Support for both nested and path-based JSON structures
 - Downloadable ZIP file with complete structure
 - Live preview of the generated structure
 
@@ -22,26 +24,72 @@ A simple web tool to generate folder structures and MDX files for Nextra-based d
 3. Click "Create & Download Zip" button
 4. Extract the downloaded ZIP file into your Nextra project's pages directory
 
-## JSON Structure Example
+## JSON Structure Examples
+
+### Nested Structure (Recommended)
 
 ```json
 {
-  "C": ["--Getting Started", "index", "why_c", "history"],
-  "C/operators": [
-    "--Basic Operators",
-    "c_arithmetic_operators",
-    "c_relational_operators"
-  ]
+  "folder1": {
+    "folder1.1": ["--Separator Title", "page1", "page2"],
+    "folder1.2": {
+      "folder1.2.1": ["--Separator Title", "page3", "page4"]
+    }
+  },
+  "folder2": {
+    "introduction": ["--Getting Started", "overview", "setup"],
+    "advanced": {
+      "topics": ["--Advanced", "config", "deployment"]
+    }
+  }
+}
+```
+
+### Path-Based Structure (Alternative)
+
+```json
+{
+  "docs": ["--Getting Started", "index", "introduction"],
+  "docs/tutorials": ["--Basics", "setup", "configuration"],
+  "docs/tutorials/advanced": ["--Advanced", "deployment", "optimization"]
 }
 ```
 
 ## Special Features
 
 - Use "--" prefix for section separators in your navigation
-- Support for nested folder paths (e.g., "docs/guide")
-- Automatic \_meta.js generation for each folder
+- Support for both nested JSON objects and path-based structures
+- Automatic \_meta.js generation for each folder level
 - Clean MDX files created for each page
 - Modern, responsive web interface
+
+## Folder Structure Output Example
+
+For the nested structure above, it will create:
+
+```
+📁 pages
+├── 📁 folder1
+│   ├── 📁 folder1.1
+│   │   ├── 📄 _meta.js
+│   │   ├── 📄 page1.mdx
+│   │   └── 📄 page2.mdx
+│   └── 📁 folder1.2
+│       └── 📁 folder1.2.1
+│           ├── 📄 _meta.js
+│           ├── 📄 page3.mdx
+│           └── 📄 page4.mdx
+└── 📁 folder2
+    ├── 📁 introduction
+    │   ├── 📄 _meta.js
+    │   ├── 📄 overview.mdx
+    │   └── 📄 setup.mdx
+    └── 📁 advanced
+        └── 📁 topics
+            ├── 📄 _meta.js
+            ├── 📄 config.mdx
+            └── 📄 deployment.mdx
+```
 
 ## Local Development
 

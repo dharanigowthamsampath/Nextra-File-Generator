@@ -57,7 +57,14 @@
           <textarea
             id="jsonInput"
             rows="20"
-            placeholder='{"C": ["--Getting Started", "index", "why_c"], "C/operators": ["--Basic Operators", "arithmetic", "relational"]}'
+            placeholder='{
+  "folder1": {
+    "folder1.1": ["--Separator Title", "page1", "page2"],
+    "folder1.2": {
+      "folder1.2.1": ["--Separator Title", "page3", "page4"]
+    }
+  }
+}'
           ></textarea>
           <div class="error-message" id="errorMessage"></div>
           <button id="createFolders">Create & Download Zip</button>
@@ -77,40 +84,40 @@
             <li>Extract the ZIP into your Nextra project's pages directory</li>
           </ol>
 
-          <h3>JSON Format</h3>
-          <p>The JSON structure follows this format:</p>
+          <h3>JSON Format Options</h3>
+          <h4>1. Nested Structure (Recommended)</h4>
           <pre><code>{
-  "folder_path": [
-    "--Separator Title",
-    "page1",
-    "page2",
-    "--Another Section",
-    "page3"
-  ]
+  "folder1": {
+    "folder1.1": ["--Separator Title", "page1", "page2"],
+    "folder1.2": {
+      "folder1.2.1": ["--Separator Title", "page3", "page4"]
+    }
+  }
+}</code></pre>
+
+          <h4>2. Path-Based Structure</h4>
+          <pre><code>{
+  "docs": ["--Getting Started", "index"],
+  "docs/tutorials": ["--Basics", "setup"],
+  "docs/tutorials/advanced": ["--Advanced", "config"]
 }</code></pre>
 
           <h3>Special Features</h3>
           <ul>
             <li>Use "--" prefix for section separators</li>
-            <li>Nested paths supported (e.g., "docs/guide")</li>
-            <li>Automatic _meta.js generation</li>
-            <li>MDX files created for each page</li>
+            <li>Supports both nested and path-based structures</li>
+            <li>Creates _meta.js for each folder</li>
+            <li>Generates MDX files automatically</li>
           </ul>
 
-          <h3>Example Structure</h3>
-          <pre><code>{
-  "C": [
-    "--Getting Started",
-    "index",
-    "why_c",
-    "history"
-  ],
-  "C/operators": [
-    "--Basic Operators",
-    "arithmetic",
-    "relational"
-  ]
-}</code></pre>
+          <h3>Output Structure</h3>
+          <p>The generator will create:</p>
+          <ul>
+            <li>A folder structure matching your JSON</li>
+            <li>A _meta.js file in each folder</li>
+            <li>MDX files for each page</li>
+            <li>Proper navigation with separators</li>
+          </ul>
         </div>
       </div>
     </div>

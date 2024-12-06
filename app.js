@@ -18,26 +18,10 @@ async function handleCreateFolders() {
 
     // Create zip
     const zip = new JSZip();
-
-    // Create pages folder as root
     const pagesFolder = zip.folder("pages");
 
-    // Process each folder and its files
-    for (const [folderPath, files] of Object.entries(folderStructure)) {
-      if (Array.isArray(files)) {
-        // Create folder and its meta.js
-        const currentFolder = pagesFolder.folder(folderPath);
-        const metaContent = createMetaContent(files);
-        currentFolder.file("_meta.js", metaContent);
-
-        // Create MDX files (skip separator entries)
-        files.forEach((file) => {
-          if (!file.startsWith("--")) {
-            currentFolder.file(`${file}.mdx`, createMDXContent(file));
-          }
-        });
-      }
-    }
+    // Process the structure
+    await processStructure(pagesFolder, folderStructure);
 
     // Generate the zip file
     const zipBlob = await zip.generateAsync({ type: "blob" });
@@ -69,6 +53,29 @@ async function handleCreateFolders() {
         error.message || "An error occurred while creating the zip file.";
     }
     console.error("Error:", error);
+  }
+}
+
+async function processStructure(parentFolder, structure, currentPath = "") {
+  for (const [name, content] of Object.entries(structure)) {
+    const folderPath = currentPath ? `${currentPath}/${name}` : name;
+    const currentFolder = parentFolder.folder(name);
+
+    if (Array.isArray(content)) {
+      // If content is an array, create files and meta.js
+      const metaContent = createMetaContent(content);
+      currentFolder.file("_meta.js", metaContent);
+
+      // Create MDX files (skip separator entries)
+      content.forEach((file) => {
+        if (!file.startsWith("--")) {
+          currentFolder.file(`${file}.mdx`, createMDXContent(file));
+        }
+      });
+    } else if (typeof content === "object") {
+      // If content is an object, recursively process it
+      await processStructure(currentFolder, content, folderPath);
+    }
   }
 }
 
@@ -112,7 +119,7 @@ function formatTitle(str) {
 
   // Convert kebab-case or snake_case to Title Case
   return str
-    .split(/[-_]/)
+    .split(/[-_.]/)
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 }
@@ -125,30 +132,10 @@ outputDisplay.textContent = `Instructions:
 
 Example JSON structure:
 {
-    "C": [
-        "--Getting Started",
-        "index",
-        "why_c",
-        "history",
-        "--Setup",
-        "setup",
-        "ide_intro",
-        "compile_run"
-    ],
-    "C/operators": [
-        "--Basic Operators",
-        "c_arithmetic_operators",
-        "c_relational_operators",
-        "--Advanced Operators",
-        "c_logical_operators",
-        "c_assignment_operators"
-    ],
-    "algorithms": [
-        "--Sorting",
-        "bubble_sort",
-        "quick_sort",
-        "--Searching",
-        "linear_search",
-        "binary_search"
-    ]
+  "folder1": {
+    "folder1.1": ["--Separator Title", "page1", "page2"],
+    "folder1.2": {
+      "folder1.2.1": ["--Separator Title", "page3", "page4"]
+    }
+  }
 }`;
