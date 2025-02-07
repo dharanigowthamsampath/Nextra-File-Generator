@@ -28,13 +28,15 @@ window.NextraAPI = {
     const meta = {};
 
     for (const [key, content] of Object.entries(structure)) {
-      if (Array.isArray(content)) {
-        // This is a section with files
-        const sectionTitle = key.startsWith("--")
-          ? key.substring(2).trim()
-          : key;
-
-        // Add section to meta if it starts with --
+      if (typeof content === "string") {
+        // Handle direct string values (like "Introduction to Go")
+        const slug = this.slugify(key);
+        meta[slug] = content;
+        parentFolder.file(`${slug}.mdx`, this.createMDXContent(content));
+      } else if (Array.isArray(content)) {
+        // Handle arrays (like Data Types array)
+        const sectionTitle = key.startsWith("--") ? key.substring(2).trim() : key;
+        
         if (key.startsWith("--")) {
           meta[`--${sectionTitle}`] = {
             title: this.formatTitle(sectionTitle),
@@ -44,58 +46,31 @@ window.NextraAPI = {
 
         // Process array items
         for (const item of content) {
-          if (typeof item === "string") {
-            // This is a regular file
-            const slug = this.slugify(item);
-            meta[slug] = item;
-            parentFolder.file(`${slug}.mdx`, this.createMDXContent(item));
-          } else if (typeof item === "object") {
-            // Process each key-value pair in the object
-            for (const [subKey, subContent] of Object.entries(item)) {
-              const subFolder = parentFolder.folder(this.slugify(subKey));
-              const subMeta = {};
-
-              if (Array.isArray(subContent)) {
-                // Process each item in the subcontent array
-                subContent.forEach((subItem) => {
-                  const subSlug = this.slugify(subItem);
-                  subMeta[subSlug] = subItem;
-                  subFolder.file(
-                    `${subSlug}.mdx`,
-                    this.createMDXContent(subItem)
-                  );
-                });
-
-                // Add folder name to parent meta
-                meta[this.slugify(subKey)] = subKey;
-
-                // Create _meta.js for subfolder with the processed items
-                const subMetaContent = `const meta = ${JSON.stringify(
-                  subMeta,
-                  null,
-                  2
-                )};
-
-export default meta;`;
-                subFolder.file("_meta.js", subMetaContent);
-              }
-            }
-          }
+          const slug = this.slugify(item);
+          meta[slug] = item;
+          parentFolder.file(`${slug}.mdx`, this.createMDXContent(item));
         }
-
-        // Create _meta.js for the current folder
-        const metaContent = `const meta = ${JSON.stringify(meta, null, 2)};
+      } else if (typeof content === "object") {
+        // Handle nested objects (like sections)
+        const newFolder = parentFolder.folder(this.slugify(key));
+        meta[this.slugify(key)] = key;
+        
+        // Process the subfolder and get its meta
+        const subMeta = await this.processStructure(newFolder, content);
+        
+        // Create _meta.js for subfolder
+        const subMetaContent = `const meta = ${JSON.stringify(subMeta, null, 2)};
 
 export default meta;`;
-        parentFolder.file("_meta.js", metaContent);
-      } else if (typeof content === "object") {
-        // This is a folder
-        const newFolder = parentFolder.folder(key);
-
-        // Process the subfolder
-        await this.processStructure(newFolder, content);
+        newFolder.file("_meta.js", subMetaContent);
       }
     }
+
+    // Create _meta.js for the current folder
+    const metaContent = `const meta = ${JSON.stringify(meta, null, 2)};
+
+export default meta;`;
+    parentFolder.file("_meta.js", metaContent);
 
     return meta;
   },
@@ -103,11 +78,15 @@ export default meta;`;
   createMDXContent(title) {
     return `# ${title}
 
-Welcome to the ${title} section.
+Welcome to the ${title} documentation.
 
 ## Overview
 
-Add your content here...
+This is an auto-generated documentation page for ${title}.
+
+## Content
+
+Add your detailed content here for ${title}...
 `;
   },
 
